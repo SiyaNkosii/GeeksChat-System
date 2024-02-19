@@ -1,10 +1,7 @@
 package usermanagement.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +26,7 @@ public class Contact {
     @JoinColumn(name = "contact_user_id")
     private User contactuser;
 
-    @OneToMany(mappedBy = "contact")
+    @OneToMany(mappedBy = "receiver")
     private List<Conversation> conversations;
 
 }

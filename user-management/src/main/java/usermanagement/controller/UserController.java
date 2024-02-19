@@ -2,15 +2,16 @@ package usermanagement.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import usermanagement.entity.Contact;
+import usermanagement.entity.User;
 import usermanagement.requestPayloads.UserLoginRequest;
 import usermanagement.requestPayloads.UserRegistrationRequest;
 import usermanagement.responsePayloads.ApiResponse;
 import usermanagement.responsePayloads.LoginResponse;
 import usermanagement.service.serviceImpl.UserServiceImpl;
+
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -35,6 +36,15 @@ public class UserController {
         } else {
             return ResponseEntity.badRequest().body(new LoginResponse());
         }
-
     }
+    @GetMapping("/searchUsers/{username}")
+    public ResponseEntity<List<User>> searchUsers(@PathVariable String username){
+        List<User> foundUsers = userService.searchUsers(username);
+        return  ResponseEntity.ok(foundUsers);
+    }
+    @PostMapping("/users/add-contact/{loggedusername}/{searchedusername}")
+    public ResponseEntity<Contact> addUserToMyContact(@PathVariable String loggedusername, @PathVariable String searchedusername) {
+        return ResponseEntity.ok(userService.addToMyContact(loggedusername,searchedusername));
+    }
+
 }
