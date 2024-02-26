@@ -22,18 +22,10 @@ public class User {
     @Column(name = "username")
     private String username;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     private String password;
 
-    @OneToMany(mappedBy = "sender",cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Conversation> sentConversations;
-
-    @JsonIgnore
-
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
-    private List<Conversation> receivedConversations;
 
 }

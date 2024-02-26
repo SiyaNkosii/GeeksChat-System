@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import usermanagement.entity.Contact;
 import usermanagement.entity.User;
+import usermanagement.exceptions.IllegalArgumentException;
 import usermanagement.exceptions.ResourceAlreadyExistException;
 import usermanagement.exceptions.ResourceNotFoundException;
 import usermanagement.repository.ContactRepository;
@@ -13,6 +14,7 @@ import usermanagement.requestPayloads.UserRegistrationRequest;
 import usermanagement.responsePayloads.LoginResponse;
 import usermanagement.service.UserService;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -67,7 +69,7 @@ public class UserServiceImpl implements UserService {
             }
             List<Contact> existingContacts = contactRepository.findByUser(loggedinUser);
             for (Contact contact : existingContacts) {
-                if (contact.getContactuser().getUsername().equals(searchedUsers)) {
+                if (contact.getContactUser().getUsername().equals(searchedUsers)) {
                     throw new ResourceAlreadyExistException("Contact is already part of your contacts.");
                 }
             }
@@ -75,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
             Contact contact = Contact.builder()
                     .user(loggedinUser)
-                    .contactuser(searchedUser)
+                    .contactUser(searchedUser)
                     .build();
             log.info("Saving contact with username: {} to my contact", searchedUser);
             contactRepository.save(contact);
@@ -85,4 +87,15 @@ public class UserServiceImpl implements UserService {
         }else {
             throw new ResourceNotFoundException("Logged-in user or searched user not found.");
         }    }
+
+    @Override
+    public List<Contact> getChatListForloggedInUser(String loggedInUsername) {
+        User loggedInUser = userRepository.findByUsername(loggedInUsername);
+        if(loggedInUser !=null){
+            return contactRepository.findByUser(loggedInUser);
+        } else {
+            return Collections.emptyList();
+        }
+
+    }
 }

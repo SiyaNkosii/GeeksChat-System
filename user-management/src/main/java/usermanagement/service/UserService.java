@@ -16,6 +16,7 @@ public interface UserService {
     LoginResponse loginUser(String email, String password);
     List<User> searchUsers(String username);
     Contact addToMyContact(String loggedInUser, String searchedUser);
+    List<Contact> getChatListForloggedInUser(String loggedInUsername);
 
 
 

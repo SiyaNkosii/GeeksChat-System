@@ -1,6 +1,7 @@
 package usermanagement.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usermanagement.entity.Contact;
@@ -45,6 +46,17 @@ public class UserController {
     @PostMapping("/users/add-contact/{loggedusername}/{searchedusername}")
     public ResponseEntity<Contact> addUserToMyContact(@PathVariable String loggedusername, @PathVariable String searchedusername) {
         return ResponseEntity.ok(userService.addToMyContact(loggedusername,searchedusername));
+    }
+    @GetMapping("/{loggedInUsername}/List")
+    public ResponseEntity<List<Contact>> getChatList(@PathVariable String loggedInUsername){
+        List<Contact> chatList = userService.getChatListForloggedInUser(loggedInUsername);
+        System.out.println(chatList.toString());
+
+        if(chatList == null || chatList.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return  new ResponseEntity<>(chatList, HttpStatus.OK);
     }
 
 }

@@ -24,9 +24,5 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "contact_user_id")
-    private User contactuser;
-
-    @OneToMany(mappedBy = "receiver")
-    private List<Conversation> conversations;
-
+    private User contactUser;
 }
