@@ -96,6 +96,13 @@ public class UserServiceImpl implements UserService {
         } else {
             return Collections.emptyList();
         }
-
     }
+    public User SelectedUsername(String selectedUsername) {
+        User selectedUser = userRepository.findByUsername(selectedUsername);
+        if(selectedUser !=null){
+            return selectedUser;
+        }
+        return null;
+    }
+
 }

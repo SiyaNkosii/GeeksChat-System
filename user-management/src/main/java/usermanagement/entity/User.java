@@ -26,6 +26,14 @@ public class User {
     private String email;
 
     private String password;
+    @OneToMany(mappedBy = "sender")
+    @JsonIgnore
+    private List<Conversation> sentMessages;
+
+    @OneToMany(mappedBy = "receiver")
+    @JsonIgnore
+    private List<Conversation> receivedMessages;
+
 
 
 }
