@@ -74,7 +74,6 @@ public class UserServiceImpl implements UserService {
                 }
             }
 
-
             Contact contact = Contact.builder()
                     .user(loggedinUser)
                     .contactUser(searchedUser)

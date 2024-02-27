@@ -1,6 +1,5 @@
 package usermanagement.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,11 +26,10 @@ public class User {
 
     private String password;
     @OneToMany(mappedBy = "sender")
-    @JsonIgnore
+
     private List<Conversation> sentMessages;
 
     @OneToMany(mappedBy = "receiver")
-    @JsonIgnore
     private List<Conversation> receivedMessages;
 
 
