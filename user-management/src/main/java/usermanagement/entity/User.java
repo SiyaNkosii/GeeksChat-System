@@ -1,5 +1,7 @@
 package usermanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,6 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +29,11 @@ public class User {
     private String email;
 
     private String password;
+    @JsonIgnore
     @OneToMany(mappedBy = "sender")
 
     private List<Conversation> sentMessages;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "receiver")
     private List<Conversation> receivedMessages;
 
