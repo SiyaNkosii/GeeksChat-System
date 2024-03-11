@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "conversation")
@@ -20,14 +22,15 @@ public class Conversation {
     @Column(name = "conv_id")
     private Long conv_id;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
-    private User sender;
+    @Column(name = "sender_username")
+    private String senderUsername;
 
-    @ManyToOne
-    @JoinColumn(name = "receiver_id")
-    private User receiver;
+    @Column(name = "receiver_username")
+    private String receiverUsername;
 
     @Column(name = "message")
     private String message;
+
+    @Column(name = "timestamp")
+    private LocalDateTime timestamp;
 }

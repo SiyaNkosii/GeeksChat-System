@@ -29,12 +29,12 @@ public class User {
     private String email;
 
     private String password;
-    @JsonIgnore
-    @OneToMany(mappedBy = "sender")
+
+    @OneToMany(mappedBy = "senderUsername")
 
     private List<Conversation> sentMessages;
-    @JsonIgnore
-    @OneToMany(mappedBy = "receiver")
+
+    @OneToMany(mappedBy = "receiverUsername")
     private List<Conversation> receivedMessages;
 
 

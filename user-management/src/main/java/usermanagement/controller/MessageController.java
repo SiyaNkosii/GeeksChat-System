@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import usermanagement.entity.Conversation;
 import usermanagement.entity.User;
 import usermanagement.exceptions.IllegalArgumentException;
 import usermanagement.messageService.MessageService;
@@ -21,13 +22,11 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter stream() throws IOException {
+    public SseEmitter stream() {
         SseEmitter emitter = new SseEmitter();
-        emitters.add(emitter);
-
-        emitter.onCompletion(() -> emitters.remove(emitter));
-        emitter.onTimeout(() -> emitters.remove(emitter));
-
+        messageService.addEmitter(emitter);
+        emitter.onCompletion(() -> messageService.removeEmitter(emitter));
+        emitter.onTimeout(() -> messageService.removeEmitter(emitter));
         return emitter;
     }
 
@@ -37,13 +36,11 @@ public class MessageController {
         String senderUsername = messageDto.getSenderUsername();
         String receiverUsername = messageDto.getReceiverUsername();
         String message = messageDto.getMessage();
+        messageService.saveConversation(senderUsername, receiverUsername, message);
+    }
 
-        User sender = messageService.getUserByUsername(senderUsername);
-        User receiver = messageService.getUserByUsername(receiverUsername);
-        if (sender != null && receiver != null) {
-            messageService.saveAndSendConversation(senderUsername, receiverUsername, message);
-        } else {
-            throw new IllegalArgumentException("Users do not exist");
-        }
+    @GetMapping("/messages/{username}")
+    public List<Conversation> getMessagesForUser(@PathVariable String username) {
+        return messageService.getMessagesForUser(username);
     }
 }

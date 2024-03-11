@@ -9,6 +9,7 @@ import usermanagement.repository.ConversationRepository;
 import usermanagement.repository.UserRepository;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -18,39 +19,34 @@ public class MessageService {
 
     @Autowired
     private ConversationRepository conversationRepository;
-    @Autowired
-    private UserRepository userRepository;
-    public  void sendMessagesToClients(Conversation conversation){
-        for (SseEmitter emitter : emitters){
+    public void addEmitter(SseEmitter emitter) {
+        emitters.add(emitter);
+    }
+    public void removeEmitter(SseEmitter emitter) {
+        emitters.remove(emitter);
+    }
+    public void sendMessageToClients(Conversation conversation) {
+        for (SseEmitter emitter : emitters) {
             try {
                 emitter.send(conversation);
-            }catch (IOException e){
-                emitter.complete();
-                emitters.remove(emitter);
+            } catch (Exception e) {
+                // Handle exception
             }
         }
     }
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-    public Conversation saveConversation(User sender, User receiver, String message) {
+
+    public Conversation saveConversation(String senderUsername, String receiverUsername, String message) {
         Conversation conversation = new Conversation();
-        conversation.setSender(sender);
-        conversation.setReceiver(receiver);
+        conversation.setSenderUsername(senderUsername);
+        conversation.setReceiverUsername(receiverUsername);
         conversation.setMessage(message);
+        conversation.setTimestamp(LocalDateTime.now()); // Set current timestamp
         return conversationRepository.save(conversation);
     }
 
-    public void saveAndSendConversation(String senderUsername, String receiverUsername, String message) {
-        User sender = getUserByUsername(senderUsername);
-        User receiver = getUserByUsername(receiverUsername);
-
-        if (sender != null && receiver != null) {
-            Conversation conversation = saveConversation(sender, receiver, message);
-            sendMessagesToClients(conversation);
-        } else {
-            throw new IllegalArgumentException("Users do not exist");
-        }
+    public List<Conversation> getMessagesForUser(String username) {
+        return conversationRepository.findBySenderUsernameOrReceiverUsernameOrderByTimestamp(username, username);
     }
+
 
 }
